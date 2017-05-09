@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="final_css/reset.css" />
+    <link rel="stylesheet" href="final_css/leaflet.css" />
+    <!-- Choose a frontend framework CSS file: -->
+    <link rel="stylesheet" href="final_css/bootstrap.css" />
+    <link rel="stylesheet" href="final_css/final_style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+<body>
+
+<div data-spy="affix" id="dot-nav">
+  <ul>
+    <li class="awesome-tooltip active" title="K-Means"><a href="#home"></a></li>
+    <li class="awesome-tooltip" title="Features"><a href="#about"></a></li>
+    <li class="awesome-tooltip" title="Philly-Focus"><a href="#projects"></a></li>
+  </ul>
+</div>
+
+<div id="main" class="container">
+  <section id="home">
+       <article>
+           <div class="row">
+               <div class="col-md-12">
+                <h3>Step-2 K-Means Analysis: Results <small>(for <a href="https://github.com/laylasun/musa620_shinyFinal/blob/master/addiontalFiles/musa800_writeup1.pdf" target="_blank">Capstone project</a> and step1 results are <a href="https://laylasun.shinyapps.io/musa620_shinyFinal/" target="_blank">here</a>.)</small></h3>
+                  <table id="table1">
+                    <tr>
+                      <td>
+                        <div class="sidebar">
+                          <h5 style='text-align: center; font-weight:bold'>K-Means Results</h5>
+                          <p style='font-size: 12px; padding: 0px 2px 2px 2px'>K-Means clustering needs a pre-determined number (K) of clusters to partition the data. Select a # to see the results in each city.</p>
+                          <p style='font-size: 11px; padding: 0px 2px 2px 2px'>* <span style='font-weight:bold'># (T)</span> in the legend means the <span style='font-weight:bold'>ID of the target cluster</span> where the block that has Amazon Go is assigned to.</p>
+                          <div style='font-size: 12px;padding: 0px 2px 2px 2px'>Seattle:</div>
+                          <button type="button" class="btn btn-default btn-xs" id="k3">K=3</button>
+                          <button type="button" class="btn btn-default btn-xs" id="k6">K=6</button>
+                          <button type="button" class="btn btn-default btn-xs" id="k29">K=29</button>
+                          <button type="button" class="btn btn-default btn-xs" id="k39">K=39</button>
+                          <p>
+                            <div style='font-size: 12px;padding: 0px 2px 2px 2px'>Philadelphia:</div>
+                            <button type="button" class="btn btn-default btn-xs" id="k3p">K=3</button>
+                            <button type="button" class="btn btn-default btn-xs" id="k6p">K=6</button>
+                            <button type="button" class="btn btn-default btn-xs" id="k29p">K=29</button>
+                            <button type="button" class="btn btn-default btn-xs" id="k39p">K=39</button>
+                          </p>
+                          <p>
+                            <p style='font-size: 12px; padding: 0px 2px 0px 2px'>Instead of choosing a particular K, let's find out the blocks that are always assigned to the <span style='font-weight:bold'>target cluster </span>in the following two cases:</p>
+                            <button type="button" id="intersect1">Blocks in #(T) | K=3 & 6 & 29</button>
+                            <button type="button" id="intersect2" >Blocks in #(T) | K=3 & 6 & 39</button>
+                            <div style='font-size: 10px;padding: 2px 2px 2px 2px'>**#(T) is defined as 9 or 11 when K=39</div>
+                          </p>
+                        </div>
+                      </td>
+                      <td class="gap1"></td>
+                      <td>
+                        <div id="sea_map"></div>
+                        <div type="button" onClick="reCenter_sea()" class="btn btn-default btn-sm" id="searecenter" title="Re-Center"><span class="glyphicon glyphicon-screenshot"></span></div>
+                        <div type="button" class="btn btn-default btn-sm" id="seareset" title="Resest Map"><span class="glyphicon glyphicon-refresh"></span></div>
+                      </td>
+                      <td class="gap1"></td>
+                      <td>
+                        <div id="phl_map"></div>
+                        <div type="button" onClick="reCenter_phl()" class="btn btn-default btn-sm" id="phlrecenter" title="Re-Center"><span class="glyphicon glyphicon-screenshot"></span></div>
+                        <div type="button" class="btn btn-default btn-sm" id="phlreset" title="Resest Map"><span class="glyphicon glyphicon-refresh"></span></div>
+                      </td>
+                    </tr>
+                  </table>
+               </div>
+           </div>
+       </article>
+  </section>
+
+    <section id="about">
+       <article>
+           <div class="row">
+               <div class="col-md-12">
+                <h3>Features Explorer<small> (For a selected set of variables used in the cluster analysis above)</small></h3>
+                  <table>
+                    <tr>
+                      <td>
+                        <div class="sidebar2">
+                          <h5 style='text-align: center; font-weight:bold'></h5>
+                          <h5 style='text-align: center; font-weight:bold'>Vehciles & Buildings</h5>
+                          <p style='font-size: 12px; padding: 0px 2px 2px 2px'>66 variables are used in the step-2 K-Means analysis. Let's take a look at the variables related to vehicles and general buildings in the study area.</p>
+                          <!-- <p style='font-size: 11px; padding: 0px 2px 2px 2px'>.</p> -->
+                          <div style='font-size: 12px;padding: 0px 2px 2px 2px'>Select a category:</div>
+                          <select id="select_cat" style="font-size:12px; padding:3px;" name="sel">
+                              <option value="" disabled selected>Category</option>
+                              <option value="1">Vehicle Inventory</option>
+                              <option value="2">General Building Stocks</option>
+                          </select>
+                          <div id="select_subcat"></div>
+                          <div id="subselect"></div>
+                          <div id='legendfortwo'></div>
+                          <div type="button" class="btn btn-default btn-sm" id="bothmaprecenter" title="Re-Center Both Maps"><span class="glyphicon glyphicon-screenshot"></span></div>
+                          <div type="button" class="btn btn-default btn-sm" id="bothmapreset" title="Resest Both Maps"><span class="glyphicon glyphicon-refresh"></span></div>
+
+                        </div>
+                      </td>
+                      <td class="gap1"></td>
+                      <td>
+                        <div id="sea_map2"></div>
+
+                      </td>
+                      <td class="gap1"></td>
+                      <td>
+                        <div id="phl_map2"></div>
+
+                      </td>
+                    </tr>
+                  </table>
+
+               </div>
+           </div>
+       </article>
+    </section>
+
+    <section id="projects">
+       <article>
+           <div class="row">
+               <div class="col-md-12">
+                <h3>Focused Study Area in Philadelphia<small> (Secondary text)</small></h3>
+                <table>
+                  <tr>
+                    <td>
+                      <div class="sidebar3">
+                        <h5 style='text-align: center; font-weight:bold'>Score Map per Cell</h5>
+                        <p style='font-size: 12px; padding: 0px 2px 2px 2px'>This score map consists of 41,408 equal-sized quadrat cells (50ft.x 50ft.) Each cell is assigned a score calculated by a Poisson regression model. The score ranges from 0 to 0.08, indicating the probability of a cell hosting a new grocery store.</p>
+                        <p style='font-size: 11px; padding: 0px 2px 2px 2px'><span style='font-weight:bold'>Loading and filtering the score map is <span style="color: red">extremely slow</span>,</span> so please choose a proper min. value and an additional cut-off value to look at. And make a cup of tea.</p>
+                        <div style='font-size: 12px;padding: 0px 2px 2px 2px'>Enter a min. value:</div>
+                        <input id="minval" class="text-input" type="number" step="0.00001" placeholder="suggested 0.0029" style="font-size:11px">
+                        <div style='font-size: 12px;padding: 7px 2px 2px 2px'>Enter another cut-off value:</div>
+                        <input id="cutoff" class="text-input" type="number" step="0.00001" placeholder="suggested 0.015" style="font-size:11px">
+                        <div style='font-size: 12px;padding: 7px 2px 2px 2px'>Choose a preferred interval to map:</div>
+                        <button type="button" class="btn btn-default btn-xs" id="within">within</button>
+                        <button type="button" class="btn btn-default btn-xs" id="abovemin">above the min.</button>
+                        <button type="button" class="btn btn-default btn-xs" id="abovecutoff">above the cutoff</button>
+                        <div style='font-size: 12px;padding: 11px 2px 2px 2px'>Otherwise, click the rectangle button on the map to draw a rectangle to look at the scores within the drawed rectangle.</div>
+                        <button type="button" class="btn btn-default btn-sm" id="clear" style="position:relative; top:7px; width:47%; text-align: center;">Erase Patches <span class="glyphicon glyphicon-erase"></span> </button>
+                        <button type="button" class="btn btn-default btn-sm" id="clearinputs" style="position:relative; top:7px; width:47%; text-align: center;">Reset for Inputs</button>
+                      </div>
+                    </td>
+                    <td class="gap1"></td>
+                    <td>
+                      <div id="phl_map3"></div>
+                    </td>
+                  </tr>
+                </table>
+               </div>
+           </div>
+       </article>
+    </section>
+
+</div>
+
+<script src="final_js/jquery-2.2.0.js"></script>
+<script src="final_js/leaflet.js"></script>
+<script src="final_js/underscore.js"></script>
+<script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+<!-- Choose a frontend framework Javascript file: -->
+<script src="final_js/bootstrap.js"></script>
+<script src="final_js/dotNav1.js"></script>
+<script src="final_js/final_setup.js"></script>
+<script src="final_js/final_app.js"></script>
+</body>
+</html>
