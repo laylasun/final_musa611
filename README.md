@@ -26,3 +26,4 @@ Section #1 should look like this (with the above-mentioned browser dimensions):
 - Toggle the **layer control** on the top-right to switch between two basemaps.
 - When the **Amazon Go** is _checked_ on the layer control panel, a marker will be placed at the location of the current prototype Amazon Go in Seattle.
 - __Click__ the Amazon Go marker will **zoom in** the map to the location of store, as well as show the popup.
+- Click ![recenter](https://github.com/laylasun/final_musa611/blob/master/img/recenter.png) to reset the center of the map.
